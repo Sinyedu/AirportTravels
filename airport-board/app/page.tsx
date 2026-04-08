@@ -1,9 +1,16 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { airports } from "./src/data/airports";
-import { generateFlights, Flight } from "./src/data/flights";
-//TODO: Later refactor into smaller components
+import { airports } from "../app/src/data/airports";
+import { generateFlights, Flight } from "../app/src/data/flights";
+
+import { AirportSelector } from "../app/src/components/ui/AirportSelector";
+import Filters from "../app/src/components/ui/Filters";
+import { SortControls } from "../app/src/components/ui/SortControls";
+import { FlightTable } from "../app/src/components/layout/FlightTable";
+import { getCountdown } from "../app/src/utils/countdown";
+import { getStatusColor, getStatusIcon } from "../app/src/utils/status";
+
 export default function Home() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
@@ -13,16 +20,28 @@ export default function Home() {
   const [page, setPage] = useState(0);
   const flightsPerPage = 5;
 
+  const [sortField, setSortField] = useState<keyof Flight | "countdown" | null>(
+    null,
+  );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [showDelayed, setShowDelayed] = useState(true);
+  const [showBoarding, setShowBoarding] = useState(true);
+
   const countryData = airports.find((c) => c.country === selectedCountry);
 
   useEffect(() => {
     if (!selectedCode) return;
 
-    const data = generateFlights(selectedCode);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setFlights(data.flights);
-    setWeather(data.weather);
-    setPage(0);
+    const updateFlights = () => {
+      const data = generateFlights(selectedCode);
+      setFlights(data.flights);
+      setWeather(data.weather);
+      setPage(0);
+    };
+
+    updateFlights();
+    const interval = setInterval(updateFlights, 60_000);
+    return () => clearInterval(interval);
   }, [selectedCode]);
 
   const totalPages = Math.ceil(flights.length / flightsPerPage);
@@ -36,67 +55,59 @@ export default function Home() {
     [flights, page],
   );
 
-  function getStatusColor(status: string) {
-    if (status.includes("Delayed")) return "text-red-400";
-    if (status.includes("Boarding") || status.includes("Final Call"))
-      return "text-green-400";
-    if (status.includes("Cancelled")) return "text-gray-400";
-    return "text-yellow-400";
-  }
+  const sortedFlights = useMemo(() => {
+    if (!sortField) return [...paginatedFlights];
+
+    return [...paginatedFlights].sort((a, b) => {
+      const valA: string | number =
+        sortField === "countdown"
+          ? parseInt(getCountdown(a.time))
+          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (a[sortField] as any);
+      const valB: string | number =
+        sortField === "countdown"
+          ? parseInt(getCountdown(b.time))
+          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (b[sortField] as any);
+
+      if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+      if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [paginatedFlights, sortField, sortOrder]);
+
+  const filteredFlights = useMemo(() => {
+    return sortedFlights.filter((f) => {
+      if (!showDelayed && f.status.includes("Delayed")) return false;
+      if (
+        !showBoarding &&
+        (f.status.includes("Boarding") || f.status.includes("Final Call"))
+      )
+        return false;
+      return true;
+    });
+  }, [sortedFlights, showDelayed, showBoarding]);
 
   return (
     <main className="min-h-screen bg-black text-yellow-400 font-mono p-10">
       <h1 className="text-3xl mb-8">Airport Departure Board</h1>
 
-      <div className="mb-6">
-        <label htmlFor="country-select" className="block mb-2">
-          Select Country
-        </label>
-        <select
-          id="country-select"
-          className="bg-black border border-yellow-400 p-2 w-64"
-          onChange={(e) => {
-            setSelectedCountry(e.target.value || null);
-            setSelectedCity(null);
-            setSelectedCode(null);
-            setFlights([]);
-            setWeather(null);
-          }}
-        >
-          <option value="">-- Choose --</option>
-          {airports.map((c) => (
-            <option key={c.country} value={c.country}>
-              {c.country}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {selectedCountry && (
-        <div className="mb-6">
-          <label htmlFor="airport-select" className="block mb-2">
-            Select Airport
-          </label>
-          <select
-            id="airport-select"
-            className="bg-black border border-yellow-400 p-2 w-64"
-            onChange={(e) => {
-              const cityName = e.target.value;
-              setSelectedCity(cityName || null);
-
-              const city = countryData?.cities.find((c) => c.name === cityName);
-              setSelectedCode(city?.code || null);
-            }}
-          >
-            <option value="">-- Choose --</option>
-            {countryData?.cities.map((city) => (
-              <option key={city.code} value={city.name}>
-                {city.name} ({city.code})
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+      <AirportSelector
+        selectedCountry={selectedCountry}
+        onSelectCountry={(c) => {
+          setSelectedCountry(c);
+          setSelectedCity(null);
+          setSelectedCode(null);
+          setFlights([]);
+          setWeather(null);
+        }}
+        selectedCity={selectedCity}
+        onSelectCity={(cityName) => {
+          setSelectedCity(cityName);
+          const city = countryData?.cities.find((c) => c.name === cityName);
+          setSelectedCode(city?.code || null);
+        }}
+      />
 
       {weather && (
         <div className="mb-4 text-lg">
@@ -105,42 +116,35 @@ export default function Home() {
       )}
 
       {selectedCity && paginatedFlights.length > 0 && (
-        <div>
+        <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <Filters
+            showDelayed={showDelayed}
+            setShowDelayed={setShowDelayed}
+            showBoarding={showBoarding}
+            setShowBoarding={setShowBoarding}
+          />
+
+          <SortControls
+            sortField={sortField}
+            setSortField={setSortField}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+          />
+        </div>
+      )}
+
+      {selectedCity && filteredFlights.length > 0 && (
+        <>
           <h2 className="text-xl mb-4">
             Departures: {selectedCity} ({selectedCode})
           </h2>
 
-          <table
-            className="w-full border border-yellow-400 text-sm"
-            data-testid="flights-table"
-          >
-            <thead>
-              <tr className="border-b border-yellow-400 text-left">
-                <th className="p-2">Flight</th>
-                <th className="p-2">Destination</th>
-                <th className="p-2">Time</th>
-                <th className="p-2">Gate</th>
-                <th className="p-2">Status</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {paginatedFlights.map((f) => (
-                <tr
-                  key={f.id}
-                  className="border-b border-yellow-900 hover:bg-yellow-900/10"
-                >
-                  <td className="p-2">{f.flight}</td>
-                  <td className="p-2">{f.destination}</td>
-                  <td className="p-2">{f.time}</td>
-                  <td className="p-2">{f.gate}</td>
-                  <td className={`p-2 font-bold ${getStatusColor(f.status)}`}>
-                    {f.status}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <FlightTable
+            flights={filteredFlights}
+            getCountdown={getCountdown}
+            getStatusColor={getStatusColor}
+            getStatusIcon={getStatusIcon}
+          />
 
           <div className="flex justify-between mt-4 w-64">
             <button
@@ -163,7 +167,7 @@ export default function Home() {
               Next
             </button>
           </div>
-        </div>
+        </>
       )}
 
       {selectedCity && flights.length === 0 && (
