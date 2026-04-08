@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { airports } from "./src/data/airports";
 import { generateFlights, Flight } from "./src/data/flights";
-
+//TODO: Later refactor into smaller components
 export default function Home() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
