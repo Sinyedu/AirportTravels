@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Home from "../../page";
 import * as flightsData from "../data/flights";
-import { mockFlights } from "./mocks/mockFlights";
+import { mockFlights } from "../mocks/mockFlights";
 import { WeatherCondition } from "../data/weather";
 
 describe("Airport Departure Board", () => {
