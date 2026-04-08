@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { airports } from "@/app/src/data/airports";
-import { generateFlights, Flight } from "@/app/src/data/flights";
+import { useState, useEffect, useMemo } from "react";
+import { airports } from "./src/data/airports";
+import { generateFlights, Flight } from "./src/data/flights";
 
 export default function Home() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
@@ -26,18 +26,34 @@ export default function Home() {
   }, [selectedCode]);
 
   const totalPages = Math.ceil(flights.length / flightsPerPage);
-  const paginatedFlights = flights.slice(
-    page * flightsPerPage,
-    page * flightsPerPage + flightsPerPage,
+
+  const paginatedFlights = useMemo(
+    () =>
+      flights.slice(
+        page * flightsPerPage,
+        page * flightsPerPage + flightsPerPage,
+      ),
+    [flights, page],
   );
+
+  function getStatusColor(status: string) {
+    if (status.includes("Delayed")) return "text-red-400";
+    if (status.includes("Boarding") || status.includes("Final Call"))
+      return "text-green-400";
+    if (status.includes("Cancelled")) return "text-gray-400";
+    return "text-yellow-400";
+  }
 
   return (
     <main className="min-h-screen bg-black text-yellow-400 font-mono p-10">
       <h1 className="text-3xl mb-8">Airport Departure Board</h1>
 
       <div className="mb-6">
-        <label className="block mb-2">Select Country</label>
+        <label htmlFor="country-select" className="block mb-2">
+          Select Country
+        </label>
         <select
+          id="country-select"
           className="bg-black border border-yellow-400 p-2 w-64"
           onChange={(e) => {
             setSelectedCountry(e.target.value || null);
@@ -58,8 +74,11 @@ export default function Home() {
 
       {selectedCountry && (
         <div className="mb-6">
-          <label className="block mb-2">Select Airport</label>
+          <label htmlFor="airport-select" className="block mb-2">
+            Select Airport
+          </label>
           <select
+            id="airport-select"
             className="bg-black border border-yellow-400 p-2 w-64"
             onChange={(e) => {
               const cityName = e.target.value;
@@ -86,12 +105,15 @@ export default function Home() {
       )}
 
       {selectedCity && paginatedFlights.length > 0 && (
-        <div className="mt-6">
+        <div>
           <h2 className="text-xl mb-4">
             Departures: {selectedCity} ({selectedCode})
           </h2>
 
-          <table className="w-full border border-yellow-400 text-sm">
+          <table
+            className="w-full border border-yellow-400 text-sm"
+            data-testid="flights-table"
+          >
             <thead>
               <tr className="border-b border-yellow-400 text-left">
                 <th className="p-2">Flight</th>
@@ -112,18 +134,7 @@ export default function Home() {
                   <td className="p-2">{f.destination}</td>
                   <td className="p-2">{f.time}</td>
                   <td className="p-2">{f.gate}</td>
-                  <td
-                    className={`p-2 font-bold ${
-                      f.status.includes("Delayed")
-                        ? "text-red-400"
-                        : f.status.includes("Boarding") ||
-                            f.status.includes("Final Call")
-                          ? "text-green-400"
-                          : f.status.includes("Cancelled")
-                            ? "text-gray-400"
-                            : "text-yellow-400"
-                    }`}
-                  >
+                  <td className={`p-2 font-bold ${getStatusColor(f.status)}`}>
                     {f.status}
                   </td>
                 </tr>
@@ -134,23 +145,29 @@ export default function Home() {
           <div className="flex justify-between mt-4 w-64">
             <button
               className="px-3 py-1 border border-yellow-400 text-yellow-400"
-              disabled={page === 0}
+              disabled={page === 0 || totalPages <= 1}
               onClick={() => setPage((p) => p - 1)}
             >
               Previous
             </button>
+
             <span className="text-yellow-400 text-xs text-center flex justify-center p-5">
               Page {page + 1} of {totalPages}
             </span>
+
             <button
               className="px-3 py-1 border border-yellow-400 text-yellow-400"
-              disabled={page + 1 >= totalPages}
+              disabled={page + 1 >= totalPages || totalPages <= 1}
               onClick={() => setPage((p) => p + 1)}
             >
               Next
             </button>
           </div>
         </div>
+      )}
+
+      {selectedCity && flights.length === 0 && (
+        <p className="text-yellow-400 mt-4">No flights available.</p>
       )}
     </main>
   );
