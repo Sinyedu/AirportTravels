@@ -1,37 +1,20 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Home from "../../page";
 import * as flightsData from "../data/flights";
+import { mockFlights } from "./mocks/mockFlights";
 import { WeatherCondition } from "../data/weather";
-
-// Mock flight data so the test can work correctly, since project is different
-const mockFlights = [
-  {
-    id: "1",
-    flight: "AB123",
-    destination: "London",
-    time: "12:00",
-    gate: "A1",
-    status: "On Time",
-  },
-  {
-    id: "2",
-    flight: "CD456",
-    destination: "Berlin",
-    time: "14:30",
-    gate: "B2",
-    status: "Delayed",
-  },
-];
-jest
-  .spyOn(flightsData, "generateFlights")
-  .mockImplementation((airportCode: string) => ({
-    airport: airportCode,
-    flights: mockFlights,
-    weather: "Sunny" as WeatherCondition,
-  }));
 
 describe("Airport Departure Board", () => {
   beforeEach(() => {
+    // Mock flight generation to always return the same flights + weather
+    jest
+      .spyOn(flightsData, "generateFlights")
+      .mockImplementation((airportCode: string) => ({
+        airport: airportCode,
+        flights: mockFlights,
+        weather: "Sunny" as WeatherCondition,
+      }));
+
     render(<Home />);
   });
 
@@ -51,7 +34,7 @@ describe("Airport Departure Board", () => {
     expect(airportSelect).toHaveDisplayValue("-- Choose --");
   });
 
-  it("renders Filters after selecting airport", () => {
+  it("renders Filters after selecting airport", async () => {
     fireEvent.change(screen.getByLabelText(/Select Country/i), {
       target: { value: "Denmark" },
     });
@@ -59,13 +42,16 @@ describe("Airport Departure Board", () => {
       target: { value: "Copenhagen" },
     });
 
-    const showDelayedCheckbox = screen.getByLabelText(/Show Delayed/i);
-    const showBoardingCheckbox = screen.getByLabelText(
+    // Wait for Filters checkboxes to appear
+    const showDelayedCheckbox = await screen.findByLabelText(/Show Delayed/i);
+    const showBoardingCheckbox = await screen.findByLabelText(
       /Show Boarding\/Final Call/i,
     );
 
     expect(showDelayedCheckbox).toBeInTheDocument();
     expect(showBoardingCheckbox).toBeInTheDocument();
+
+    // Default checkboxes state
     expect(showDelayedCheckbox).toBeChecked();
     expect(showBoardingCheckbox).toBeChecked();
   });
@@ -78,10 +64,11 @@ describe("Airport Departure Board", () => {
       target: { value: "Copenhagen" },
     });
 
-    // Wait for flights to appear
-    const table = await waitFor(() => screen.getByTestId("flights-table"));
+    const table = await screen.findByTestId("flights-table");
     expect(table).toBeInTheDocument();
-    expect(table.querySelectorAll("tbody tr").length).toBeGreaterThan(0);
+
+    const rows = table.querySelectorAll("tbody tr");
+    expect(rows.length).toBeGreaterThan(0);
   });
 
   it("paginates flights correctly", async () => {
@@ -92,21 +79,27 @@ describe("Airport Departure Board", () => {
       target: { value: "Copenhagen" },
     });
 
-    const table = await waitFor(() => screen.getByTestId("flights-table"));
+    const table = await screen.findByTestId("flights-table");
+    const rows = table.querySelectorAll("tbody tr");
+    const rowCount = rows.length;
 
     const nextButton = screen.getByRole("button", { name: /Next/i });
     const prevButton = screen.getByRole("button", { name: /Previous/i });
 
+    // Prev should be disabled on first page
     expect(prevButton).toBeDisabled();
 
-    const rowCount = table.querySelectorAll("tbody tr").length;
     const flightsPerPage = 5;
     const totalPages = Math.ceil(rowCount / flightsPerPage);
 
     if (totalPages > 1) {
       expect(nextButton).not.toBeDisabled();
+
       fireEvent.click(nextButton);
-      expect(prevButton).not.toBeDisabled();
+
+      await waitFor(() => {
+        expect(prevButton).not.toBeDisabled();
+      });
     } else {
       expect(nextButton).toBeDisabled();
     }
