@@ -9,6 +9,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./airport-board
+
     steps:
       - uses: actions/checkout@v4
 
@@ -16,13 +20,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Test
+      - name: Run unit tests
         run: npm test
 
       - name: Build
         run: npm run build
+
+      - name: Run Playwright tests
+        run: npx playwright test
