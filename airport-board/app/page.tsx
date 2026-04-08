@@ -2,15 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { airports } from "@/app/src/data/airports";
-
-type Flight = {
-  id: string;
-  flight: string;
-  destination: string;
-  time: string;
-  gate: string;
-  status: string;
-};
+import { generateFlights, Flight } from "@/app/src/data/flights";
 
 export default function Home() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
@@ -18,33 +10,30 @@ export default function Home() {
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
   const [flights, setFlights] = useState<Flight[]>([]);
   const [weather, setWeather] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
+  const flightsPerPage = 5;
 
   const countryData = airports.find((c) => c.country === selectedCountry);
 
   useEffect(() => {
     if (!selectedCode) return;
 
-    const fetchFlights = async () => {
-      try {
-        const res = await fetch(`/api/flights?airport=${selectedCode}`);
-        const data = await res.json();
-
-        setFlights(data.flights || []);
-        setWeather(data.weather || null);
-      } catch (err) {
-        console.error("Failed to fetch flights", err);
-      }
-    };
-
-    fetchFlights();
-
-    const interval = setInterval(fetchFlights, 5000);
-    return () => clearInterval(interval);
+    const data = generateFlights(selectedCode);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFlights(data.flights);
+    setWeather(data.weather);
+    setPage(0);
   }, [selectedCode]);
+
+  const totalPages = Math.ceil(flights.length / flightsPerPage);
+  const paginatedFlights = flights.slice(
+    page * flightsPerPage,
+    page * flightsPerPage + flightsPerPage,
+  );
 
   return (
     <main className="min-h-screen bg-black text-yellow-400 font-mono p-10">
-      <h1 className="text-3xl mb-8">✈ Airport Departure Board</h1>
+      <h1 className="text-3xl mb-8">Airport Departure Board</h1>
 
       <div className="mb-6">
         <label className="block mb-2">Select Country</label>
@@ -77,7 +66,6 @@ export default function Home() {
               setSelectedCity(cityName || null);
 
               const city = countryData?.cities.find((c) => c.name === cityName);
-
               setSelectedCode(city?.code || null);
             }}
           >
@@ -97,7 +85,7 @@ export default function Home() {
         </div>
       )}
 
-      {selectedCity && flights.length > 0 && (
+      {selectedCity && paginatedFlights.length > 0 && (
         <div className="mt-6">
           <h2 className="text-xl mb-4">
             Departures: {selectedCity} ({selectedCode})
@@ -115,7 +103,7 @@ export default function Home() {
             </thead>
 
             <tbody>
-              {flights.map((f) => (
+              {paginatedFlights.map((f) => (
                 <tr
                   key={f.id}
                   className="border-b border-yellow-900 hover:bg-yellow-900/10"
@@ -128,7 +116,8 @@ export default function Home() {
                     className={`p-2 font-bold ${
                       f.status.includes("Delayed")
                         ? "text-red-400"
-                        : f.status.includes("Boarding")
+                        : f.status.includes("Boarding") ||
+                            f.status.includes("Final Call")
                           ? "text-green-400"
                           : f.status.includes("Cancelled")
                             ? "text-gray-400"
@@ -141,6 +130,26 @@ export default function Home() {
               ))}
             </tbody>
           </table>
+
+          <div className="flex justify-between mt-4 w-64">
+            <button
+              className="px-3 py-1 border border-yellow-400 text-yellow-400"
+              disabled={page === 0}
+              onClick={() => setPage((p) => p - 1)}
+            >
+              Previous
+            </button>
+            <span className="text-yellow-400 text-xs text-center flex justify-center p-5">
+              Page {page + 1} of {totalPages}
+            </span>
+            <button
+              className="px-3 py-1 border border-yellow-400 text-yellow-400"
+              disabled={page + 1 >= totalPages}
+              onClick={() => setPage((p) => p + 1)}
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
     </main>

@@ -1,5 +1,3 @@
-// /src/data/flights.ts
-
 import { getAirportWeather, WeatherCondition } from "./weather";
 
 export type Flight = {
@@ -21,17 +19,6 @@ function randomItem<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function randomTime() {
-  const hour = Math.floor(Math.random() * 24)
-    .toString()
-    .padStart(2, "0");
-  const min = Math.floor(Math.random() * 60)
-    .toString()
-    .padStart(2, "0");
-
-  return `${hour}:${min}`;
-}
-
 function randomGate() {
   const letters = ["A", "B", "C"];
   return `${randomItem(letters)}${Math.floor(Math.random() * 20)}`;
@@ -46,31 +33,41 @@ function randomDestination() {
   return randomItem(["London", "Paris", "Berlin", "New York", "Oslo"]);
 }
 
-function generateStatus(delayFactor: number): string {
-  const rand = Math.random();
-
-  if (rand < delayFactor) return "Delayed";
-  if (rand < 0.7) return "On Time";
-  if (rand < 0.85) return "Boarding";
-  return "Cancelled";
-}
-
 export function generateFlights(airportCode: string): FlightResponse {
   const { condition, delayFactor } = getAirportWeather();
 
+  const now = new Date();
+
   const flights: Flight[] = Array.from({ length: 8 }).map((_, i) => {
-    const status = generateStatus(delayFactor);
+    const offsetMinutes = Math.floor(Math.random() * 180) - 60;
+    const flightTime = new Date(now.getTime() + offsetMinutes * 60000);
+
+    const hours = flightTime.getHours().toString().padStart(2, "0");
+    const minutes = flightTime.getMinutes().toString().padStart(2, "0");
+    const formattedTime = `${hours}:${minutes}`;
+
+    const diff = Math.floor((flightTime.getTime() - now.getTime()) / 60000);
+
+    let status = "";
+
+    if (diff > 60) status = "Scheduled";
+    else if (diff > 30) status = "Check-in";
+    else if (diff > 15) status = "Boarding";
+    else if (diff > 5) status = "Final Call";
+    else if (diff > 0) status = "Gate Closing";
+    else status = "Departed";
+
+    if (Math.random() < delayFactor && diff > 0) {
+      status = `Delayed (${condition})`;
+    }
 
     return {
       id: `${airportCode}-${i}`,
       flight: randomFlightCode(),
       destination: randomDestination(),
-      time: randomTime(),
+      time: formattedTime,
       gate: randomGate(),
-      status:
-        status === "Delayed" && condition !== "Clear"
-          ? `${status} (${condition})`
-          : status,
+      status,
     };
   });
 
