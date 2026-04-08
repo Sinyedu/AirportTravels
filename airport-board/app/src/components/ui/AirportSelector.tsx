@@ -18,11 +18,17 @@ export function AirportSelector({
   return (
     <>
       <div className="mb-6">
-        <label className="block mb-2">Select Country</label>
+        <label htmlFor="country-select" className="block mb-2">
+          Select Country
+        </label>
         <select
+          id="country-select"
           className="bg-black border border-yellow-400 p-2 w-64"
           value={selectedCountry || ""}
-          onChange={(e) => onSelectCountry(e.target.value || null)}
+          onChange={(e) => {
+            onSelectCountry(e.target.value || null);
+            onSelectCity(null);
+          }}
         >
           <option value="">-- Choose --</option>
           {airports.map((c) => (
@@ -32,13 +38,20 @@ export function AirportSelector({
           ))}
         </select>
       </div>
+
       {selectedCountry && (
         <div className="mb-6">
-          <label className="block mb-2">Select Airport</label>
+          <label htmlFor="airport-select" className="block mb-2">
+            Select Airport
+          </label>
           <select
+            id="airport-select"
             className="bg-black border border-yellow-400 p-2 w-64"
             value={selectedCity || ""}
-            onChange={(e) => onSelectCity(e.target.value || null)}
+            onChange={(e) => {
+              const cityName = e.target.value || null;
+              onSelectCity(cityName);
+            }}
           >
             <option value="">-- Choose --</option>
             {countryData?.cities.map((city) => (

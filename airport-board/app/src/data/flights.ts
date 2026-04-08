@@ -38,7 +38,7 @@ export function generateFlights(airportCode: string): FlightResponse {
 
   const now = new Date();
 
-  const flights: Flight[] = Array.from({ length: 8 }).map((_, i) => {
+  const flights: Flight[] = Array.from({ length: 25 }).map((_, i) => {
     const offsetMinutes = Math.floor(Math.random() * 180) - 60;
     const flightTime = new Date(now.getTime() + offsetMinutes * 60000);
 
