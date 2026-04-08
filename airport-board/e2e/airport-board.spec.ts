@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Airport Departure Board", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000");
+    await page.goto("https://airport-travels.vercel.app/");
   });
 
   test("User can view flights board", async ({ page }) => {
