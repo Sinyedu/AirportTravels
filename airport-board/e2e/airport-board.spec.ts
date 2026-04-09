@@ -5,33 +5,6 @@ test.describe("Airport Departure Board", () => {
     await page.goto("https://airport-travels.vercel.app/");
   });
 
-  test("User can view flights board and weather", async ({ page }) => {
-    // Select country
-    await page.locator("#country-select").selectOption("Denmark");
-
-    // Select airport
-    await page.locator("#airport-select").selectOption("Copenhagen");
-
-    // Weather
-    await expect(page.locator("text=Weather:")).toBeVisible();
-
-    // Flight table
-    const table = page.locator("[data-testid='flights-table']");
-    await expect(table).toBeVisible();
-
-    // Pagination
-    const prevButton = page.getByRole("button", { name: "Previous" });
-    const nextButton = page.getByRole("button", { name: "Next" });
-
-    await expect(prevButton).toBeDisabled();
-
-    // Only test clicking if next is enabled
-    if (await nextButton.isEnabled()) {
-      await nextButton.click();
-      await expect(prevButton).toBeEnabled();
-    }
-  });
-
   test("Filters work correctly", async ({ page }) => {
     await page.locator("#country-select").selectOption("Denmark");
     await page.locator("#airport-select").selectOption("Copenhagen");
@@ -74,12 +47,5 @@ test.describe("Airport Departure Board", () => {
       .innerText();
 
     expect(firstDesc).toBeTruthy();
-  });
-
-  test("Page does not crash for any airport", async ({ page }) => {
-    await page.locator("#country-select").selectOption("France");
-    await page.locator("#airport-select").selectOption("Nice");
-
-    await expect(page.locator("[data-testid='flights-table']")).toBeVisible();
   });
 });

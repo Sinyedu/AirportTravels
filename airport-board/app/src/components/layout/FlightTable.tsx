@@ -7,7 +7,6 @@ interface FlightTableProps {
   getStatusColor: (status: string) => string;
   getStatusIcon: (status: string) => string;
 }
-
 export function FlightTable({
   flights,
   getCountdown,

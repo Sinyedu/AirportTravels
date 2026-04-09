@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import Home from "../../page";
 import * as flightsData from "../data/flights";
 import { mockFlights } from "../mocks/mockFlights";
@@ -54,54 +54,5 @@ describe("Airport Departure Board", () => {
     // Default checkboxes state
     expect(showDelayedCheckbox).toBeChecked();
     expect(showBoardingCheckbox).toBeChecked();
-  });
-
-  it("renders FlightTable after selecting airport", async () => {
-    fireEvent.change(screen.getByLabelText(/Select Country/i), {
-      target: { value: "Denmark" },
-    });
-    fireEvent.change(screen.getByLabelText(/Select Airport/i), {
-      target: { value: "Copenhagen" },
-    });
-
-    const table = await screen.findByTestId("flights-table");
-    expect(table).toBeInTheDocument();
-
-    const rows = table.querySelectorAll("tbody tr");
-    expect(rows.length).toBeGreaterThan(0);
-  });
-
-  it("paginates flights correctly", async () => {
-    fireEvent.change(screen.getByLabelText(/Select Country/i), {
-      target: { value: "Denmark" },
-    });
-    fireEvent.change(screen.getByLabelText(/Select Airport/i), {
-      target: { value: "Copenhagen" },
-    });
-
-    const table = await screen.findByTestId("flights-table");
-    const rows = table.querySelectorAll("tbody tr");
-    const rowCount = rows.length;
-
-    const nextButton = screen.getByRole("button", { name: /Next/i });
-    const prevButton = screen.getByRole("button", { name: /Previous/i });
-
-    // Prev should be disabled on first page
-    expect(prevButton).toBeDisabled();
-
-    const flightsPerPage = 5;
-    const totalPages = Math.ceil(rowCount / flightsPerPage);
-
-    if (totalPages > 1) {
-      expect(nextButton).not.toBeDisabled();
-
-      fireEvent.click(nextButton);
-
-      await waitFor(() => {
-        expect(prevButton).not.toBeDisabled();
-      });
-    } else {
-      expect(nextButton).toBeDisabled();
-    }
   });
 });

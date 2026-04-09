@@ -50,6 +50,7 @@ export function generateFlights(airportCode: string): FlightResponse {
 
     let status = "";
     //TODO: Create a map
+    if (diff === -1) status = "Arriving";
     if (diff > 60) status = "Scheduled";
     else if (diff > 30) status = "Check-in";
     else if (diff > 15) status = "Boarding";

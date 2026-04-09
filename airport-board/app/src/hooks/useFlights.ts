@@ -15,7 +15,7 @@ export function useFlights(airportCode: string | null) {
     };
 
     updateFlights();
-    const interval = setInterval(updateFlights, 60_000); // update every minute
+    const interval = setInterval(updateFlights, 60_000);
     return () => clearInterval(interval);
   }, [airportCode]);
 
