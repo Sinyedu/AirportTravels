@@ -171,7 +171,9 @@ export default function Home() {
       )}
 
       {selectedCity && flights.length === 0 && (
-        <p className="text-yellow-400 mt-4">No flights available.</p>
+        <p className="text-yellow-400 mt-4">
+          No flights found for selected city
+        </p>
       )}
     </main>
   );
