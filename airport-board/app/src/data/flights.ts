@@ -33,6 +33,14 @@ function randomDestination() {
   return randomItem(["London", "Paris", "Berlin", "New York", "Oslo"]);
 }
 
+const delayStatusMap = new Map<number, string>();
+delayStatusMap.set(-1, "Arriving");
+delayStatusMap.set(60, "Scheduled");
+delayStatusMap.set(30, "Check-in");
+delayStatusMap.set(15, "Boarding");
+delayStatusMap.set(5, "Final Call");
+delayStatusMap.set(0, "Gate Closing");
+
 export function generateFlights(airportCode: string): FlightResponse {
   const { condition, delayFactor } = getAirportWeather();
 
@@ -48,15 +56,7 @@ export function generateFlights(airportCode: string): FlightResponse {
 
     const diff = Math.floor((flightTime.getTime() - now.getTime()) / 60000);
 
-    let status = "";
-    //TODO: Create a map
-    if (diff === -1) status = "Arriving";
-    if (diff > 60) status = "Scheduled";
-    else if (diff > 30) status = "Check-in";
-    else if (diff > 15) status = "Boarding";
-    else if (diff > 5) status = "Final Call";
-    else if (diff > 0) status = "Gate Closing";
-    else status = "Departed";
+    let status = delayStatusMap.get(diff) || "";
 
     if (Math.random() < delayFactor && diff > 0) {
       status = `Delayed (${condition})`;

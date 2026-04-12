@@ -41,4 +41,12 @@ export const airports = [
       { name: "Chicago O'Hare", code: "ORD" },
     ],
   },
+  {
+    country: "Norway",
+    cities: [
+      { name: "Oslo Gardermoen", code: "OSL" },
+      { name: "Bergen", code: "BGO" },
+      { name: "Trondheim", code: "TRD" },
+    ],
+  },
 ];
