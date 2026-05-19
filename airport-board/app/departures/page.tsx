@@ -4,7 +4,9 @@ import { PlatformShell } from "@/shared/ui/PlatformShell";
 export default function DeparturesPage() {
   return (
     <PlatformShell>
-      <DepartureBoard />
+      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+        <DepartureBoard />
+      </div>
     </PlatformShell>
   );
 }

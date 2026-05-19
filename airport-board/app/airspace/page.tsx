@@ -1,6 +1,7 @@
 import { airports } from "@/entities/airport/airports";
 import { generateFlights } from "@/entities/flight/flights";
 import { PlatformShell } from "@/shared/ui/PlatformShell";
+import { PageSection } from "@/shared/ui/PageSection";
 
 export const dynamic = "force-dynamic";
 
@@ -22,41 +23,58 @@ export default function AirspacePage() {
 
   return (
     <PlatformShell>
-      <section aria-labelledby="airspace-title">
-        <div className="mb-8">
-          <p className="mb-2 text-sm uppercase text-yellow-400/70">
-            Live airspace
-          </p>
-          <h1 id="airspace-title" className="text-3xl">
-            Regional operating picture
-          </h1>
+      <PageSection
+        className="pt-0"
+        description="A compact view of airport weather, generated traffic volume, and delay signals."
+        eyebrow="Live airspace"
+        title="Regional operating picture"
+      >
+        <div className="mb-6 grid gap-4 md:grid-cols-3">
+          <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="text-sm font-medium text-slate-500">Tracked airports</p>
+            <p className="mt-3 text-4xl font-semibold text-slate-950">
+              {airspaceRows.length}
+            </p>
+          </article>
+          <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="text-sm font-medium text-slate-500">Active flights</p>
+            <p className="mt-3 text-4xl font-semibold text-slate-950">
+              {airspaceRows.reduce((total, row) => total + row.activeFlights, 0)}
+            </p>
+          </article>
+          <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="text-sm font-medium text-slate-500">Delay signals</p>
+            <p className="mt-3 text-4xl font-semibold text-amber-600">
+              {airspaceRows.reduce((total, row) => total + row.delayedFlights, 0)}
+            </p>
+          </article>
         </div>
 
-        <div className="overflow-x-auto border border-yellow-400/50">
+        <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
           <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-yellow-400/50">
+            <thead className="bg-slate-50">
+              <tr className="border-b border-slate-200 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
                 <th className="p-3">Airport</th>
                 <th className="p-3">Weather</th>
                 <th className="p-3">Flights</th>
                 <th className="p-3">Delays</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {airspaceRows.map((row) => (
-                <tr key={row.airport.code} className="border-b border-yellow-900">
-                  <td className="p-3">
+                <tr className="hover:bg-slate-50" key={row.airport.code}>
+                  <td className="p-3 font-medium text-slate-950">
                     {row.airport.name} ({row.airport.code})
                   </td>
-                  <td className="p-3">{row.weather}</td>
-                  <td className="p-3">{row.activeFlights}</td>
-                  <td className="p-3">{row.delayedFlights}</td>
+                  <td className="p-3 text-slate-700">{row.weather}</td>
+                  <td className="p-3 text-slate-700">{row.activeFlights}</td>
+                  <td className="p-3 text-slate-700">{row.delayedFlights}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </section>
+      </PageSection>
     </PlatformShell>
   );
 }

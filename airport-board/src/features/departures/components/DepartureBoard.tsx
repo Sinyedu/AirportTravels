@@ -11,14 +11,22 @@ import {
   getStatusIcon,
 } from "@/features/departures/lib/status";
 
-export function DepartureBoard() {
+type DepartureBoardProps = {
+  headingLevel?: "h1" | "h2";
+};
+
+export function DepartureBoard({ headingLevel = "h1" }: DepartureBoardProps) {
   const board = useDepartureBoard();
+  const Heading = headingLevel;
 
   return (
     <section aria-labelledby="departure-board-title">
-      <h1 id="departure-board-title" className="text-3xl mb-8">
+      <Heading
+        id="departure-board-title"
+        className="mb-6 text-2xl font-semibold tracking-normal text-slate-950 md:text-3xl"
+      >
         Airport Departure Board
-      </h1>
+      </Heading>
 
       <AirportSelector
         selectedCountry={board.selectedCountry}
@@ -28,13 +36,13 @@ export function DepartureBoard() {
       />
 
       {board.weather && (
-        <div className="mb-4 text-lg">
-          Weather: <span className="font-bold">{board.weather}</span>
+        <div className="mb-5 inline-flex rounded-full border border-sky-100 bg-sky-50 px-4 py-2 text-sm font-medium text-sky-900">
+          Weather: <span className="ml-1 font-semibold">{board.weather}</span>
         </div>
       )}
 
       {board.selectedCity && board.paginatedFlights.length > 0 && (
-        <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="mb-5 flex flex-col gap-4 rounded-lg border border-slate-200 bg-slate-50 p-4 md:flex-row md:items-center md:justify-between">
           <FlightFilters
             showDelayed={board.showDelayed}
             setShowDelayed={board.setShowDelayed}
@@ -53,9 +61,9 @@ export function DepartureBoard() {
 
       {board.selectedCity && board.visibleFlights.length > 0 && (
         <>
-          <h2 className="text-xl mb-4">
+          <h3 className="mb-4 text-lg font-semibold text-slate-950">
             Departures: {board.selectedCity} ({board.selectedCode})
-          </h2>
+          </h3>
 
           <FlightTable
             flights={board.visibleFlights}
@@ -64,21 +72,21 @@ export function DepartureBoard() {
             getStatusIcon={getStatusIcon}
           />
 
-          <div className="flex justify-between mt-4 w-64">
+          <div className="mt-5 flex w-full max-w-sm items-center justify-between gap-3">
             <button
-              className="px-3 py-1 border border-yellow-400 text-yellow-400 disabled:opacity-40"
+              className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
               disabled={board.page === 0 || board.totalPages <= 1}
               onClick={() => board.setPage((page) => page - 1)}
             >
               Previous
             </button>
 
-            <span className="text-yellow-400 text-xs text-center flex justify-center p-5">
+            <span className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
               Page {board.page + 1} of {board.totalPages}
             </span>
 
             <button
-              className="px-3 py-1 border border-yellow-400 text-yellow-400 disabled:opacity-40"
+              className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
               disabled={
                 board.page + 1 >= board.totalPages || board.totalPages <= 1
               }
@@ -91,7 +99,7 @@ export function DepartureBoard() {
       )}
 
       {board.selectedCity && board.flights.length === 0 && (
-        <p className="text-yellow-400 mt-4">
+        <p className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
           No flights found for selected city
         </p>
       )}

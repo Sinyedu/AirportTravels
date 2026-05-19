@@ -16,14 +16,17 @@ export function AirportSelector({
   const countryData = airports.find((c) => c.country === selectedCountry);
 
   return (
-    <>
-      <div className="mb-6">
-        <label htmlFor="country-select" className="block mb-2">
+    <div className="mb-6 grid gap-4 md:grid-cols-2">
+      <div>
+        <label
+          htmlFor="country-select"
+          className="mb-2 block text-sm font-semibold text-slate-700"
+        >
           Select Country
         </label>
         <select
           id="country-select"
-          className="bg-black border border-yellow-400 p-2 w-64"
+          className="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
           value={selectedCountry || ""}
           onChange={(e) => {
             onSelectCountry(e.target.value || null);
@@ -40,13 +43,16 @@ export function AirportSelector({
       </div>
 
       {selectedCountry && (
-        <div className="mb-6">
-          <label htmlFor="airport-select" className="block mb-2">
+        <div>
+          <label
+            htmlFor="airport-select"
+            className="mb-2 block text-sm font-semibold text-slate-700"
+          >
             Select Airport
           </label>
           <select
             id="airport-select"
-            className="bg-black border border-yellow-400 p-2 w-64"
+            className="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-950 outline-none transition-colors focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
             value={selectedCity || ""}
             onChange={(e) => {
               const cityName = e.target.value || null;
@@ -62,6 +68,6 @@ export function AirportSelector({
           </select>
         </div>
       )}
-    </>
+    </div>
   );
 }

@@ -1,5 +1,6 @@
 import { airports } from "@/entities/airport/airports";
 import { PlatformShell } from "@/shared/ui/PlatformShell";
+import { PageSection } from "@/shared/ui/PageSection";
 
 const destinationGroups = [
   {
@@ -30,31 +31,30 @@ const airportCodes = new Map(
 export default function DiscoverPage() {
   return (
     <PlatformShell>
-      <section aria-labelledby="discover-title">
-        <div className="mb-8">
-          <p className="mb-2 text-sm uppercase text-yellow-400/70">
-            Destination discovery
-          </p>
-          <h1 id="discover-title" className="text-3xl">
-            Explore reachable airport regions
-          </h1>
-        </div>
+      <PageSection
+        className="pt-0"
+        description="Curated groups for quick route exploration across cities, hubs, and northern European airports."
+        eyebrow="Destination discovery"
+        title="Explore reachable airport regions"
+      >
 
         <div className="grid gap-4 md:grid-cols-3">
           {destinationGroups.map((group) => (
             <article
               key={group.title}
-              className="border border-yellow-400/50 p-4"
+              className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
             >
-              <h2 className="mb-4 text-xl">{group.title}</h2>
+              <h2 className="mb-5 text-xl font-semibold text-slate-950">
+                {group.title}
+              </h2>
               <ul className="space-y-3 text-sm">
                 {group.destinations.map((destination) => (
                   <li
                     key={destination}
-                    className="flex items-center justify-between gap-4"
+                    className="flex items-center justify-between gap-4 border-t border-slate-100 pt-3 text-slate-700"
                   >
                     <span>{destination}</span>
-                    <span className="font-bold">
+                    <span className="rounded-full bg-sky-50 px-3 py-1 font-bold text-sky-700">
                       {airportCodes.get(destination)}
                     </span>
                   </li>
@@ -63,7 +63,7 @@ export default function DiscoverPage() {
             </article>
           ))}
         </div>
-      </section>
+      </PageSection>
     </PlatformShell>
   );
 }

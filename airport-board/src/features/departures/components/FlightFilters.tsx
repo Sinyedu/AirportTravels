@@ -14,21 +14,23 @@ export default function FlightFilters({
   setShowBoarding,
 }: FlightFiltersProps) {
   return (
-    <div>
-      <label>
+    <div className="flex flex-col gap-3 text-sm font-medium text-slate-700 sm:flex-row sm:items-center">
+      <label className="inline-flex items-center gap-2">
         <input
+          className="size-4 rounded border-slate-300 text-sky-600 accent-sky-600"
           type="checkbox"
           checked={showDelayed}
           onChange={(e) => setShowDelayed(e.target.checked)}
-        />{" "}
+        />
         Show Delayed
       </label>
-      <label className="ml-4">
+      <label className="inline-flex items-center gap-2">
         <input
+          className="size-4 rounded border-slate-300 text-sky-600 accent-sky-600"
           type="checkbox"
           checked={showBoarding}
           onChange={(e) => setShowBoarding(e.target.checked)}
-        />{" "}
+        />
         Show Boarding/Final Call
       </label>
     </div>

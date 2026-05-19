@@ -1,10 +1,10 @@
 export function getStatusColor(status: string) {
-  if (status.includes("Delayed")) return "text-red-400";
+  if (status.includes("Delayed")) return "text-rose-600";
   if (status.includes("Boarding") || status.includes("Final Call"))
-    return "text-green-400";
-  if (status.includes("Gate Closing")) return "text-yellow-400";
-  if (status.includes("Departed")) return "text-gray-400";
-  return "text-yellow-400";
+    return "text-emerald-600";
+  if (status.includes("Gate Closing")) return "text-amber-600";
+  if (status.includes("Departed")) return "text-slate-400";
+  return "text-sky-700";
 }
 
 export function getStatusIcon(status: string) {
