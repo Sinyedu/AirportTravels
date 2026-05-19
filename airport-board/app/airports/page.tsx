@@ -4,13 +4,13 @@ import { PageSection } from "@/shared/ui/PageSection";
 
 type AirportsPageProps = {
   searchParams?: Promise<{
-    q?: string | string[];
+    query?: string | string[];
   }>;
 };
 
 export default async function AirportsPage({ searchParams }: AirportsPageProps) {
   const params = await searchParams;
-  const queryParam = params?.q;
+  const queryParam = params?.query;
   const query = (Array.isArray(queryParam) ? queryParam[0] : queryParam ?? "")
     .trim()
     .toLowerCase();
