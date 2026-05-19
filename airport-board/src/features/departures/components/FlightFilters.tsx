@@ -1,18 +1,18 @@
 "use client";
 
-interface FiltersProps {
+interface FlightFiltersProps {
   showDelayed: boolean;
   setShowDelayed: (value: boolean) => void;
   showBoarding: boolean;
   setShowBoarding: (value: boolean) => void;
 }
 
-export default function Filters({
+export default function FlightFilters({
   showDelayed,
   setShowDelayed,
   showBoarding,
   setShowBoarding,
-}: FiltersProps) {
+}: FlightFiltersProps) {
   return (
     <div>
       <label>

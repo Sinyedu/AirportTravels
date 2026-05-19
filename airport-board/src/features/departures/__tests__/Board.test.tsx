@@ -1,8 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import Home from "../../page";
-import * as flightsData from "../data/flights";
-import { mockFlights } from "../mocks/mockFlights";
-import { WeatherCondition } from "../data/weather";
+import Home from "../../../../app/page";
+import * as flightsData from "@/entities/flight/flights";
+import { mockFlights } from "@/test/fixtures/mockFlights";
 
 describe("Airport Departure Board", () => {
   beforeEach(() => {
@@ -12,7 +11,7 @@ describe("Airport Departure Board", () => {
       .mockImplementation((airportCode: string) => ({
         airport: airportCode,
         flights: mockFlights,
-        weather: "Sunny" as WeatherCondition,
+        weather: "Clear",
       }));
 
     render(<Home />);

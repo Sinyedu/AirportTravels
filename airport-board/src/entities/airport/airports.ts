@@ -1,4 +1,14 @@
-export const airports = [
+export type Airport = {
+  name: string;
+  code: string;
+};
+
+export type AirportCountry = {
+  country: string;
+  cities: Airport[];
+};
+
+export const airports: AirportCountry[] = [
   {
     country: "Denmark",
     cities: [

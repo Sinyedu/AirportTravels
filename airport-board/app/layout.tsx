@@ -13,9 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Airport Board - Web Application",
-  description:
-    "An Airport Board for selectable Airports, with generative Flights and Airports!",
+  title: "Where to Fly?",
+  description: "Airport, departure, and destination exploration for travelers.",
 };
 
 export default function RootLayout({
