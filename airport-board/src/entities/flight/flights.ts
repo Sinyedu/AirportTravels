@@ -1,4 +1,20 @@
-import { getAirportWeather, WeatherCondition } from "./weather";
+import {
+  getAirportWeather,
+  type WeatherCondition,
+} from "@/entities/weather/weather";
+
+export type FlightStatus =
+  | "Arriving"
+  | "Scheduled"
+  | "Check-in"
+  | "Boarding"
+  | "Final Call"
+  | "Gate Closing"
+  | "Departed"
+  | "On Time"
+  | "Delayed"
+  | `Delayed (${WeatherCondition})`
+  | "";
 
 export type Flight = {
   id: string;
@@ -6,7 +22,7 @@ export type Flight = {
   destination: string;
   time: string;
   gate: string;
-  status: string;
+  status: FlightStatus;
 };
 
 export type FlightResponse = {
@@ -33,7 +49,7 @@ function randomDestination() {
   return randomItem(["London", "Paris", "Berlin", "New York", "Oslo"]);
 }
 
-const delayStatusMap = new Map<number, string>();
+const delayStatusMap = new Map<number, FlightStatus>();
 delayStatusMap.set(-1, "Arriving");
 delayStatusMap.set(60, "Scheduled");
 delayStatusMap.set(30, "Check-in");
@@ -56,7 +72,7 @@ export function generateFlights(airportCode: string): FlightResponse {
 
     const diff = Math.floor((flightTime.getTime() - now.getTime()) / 60000);
 
-    let status = delayStatusMap.get(diff) || "";
+    let status: FlightStatus = delayStatusMap.get(diff) || "";
 
     if (Math.random() < delayFactor && diff > 0) {
       status = `Delayed (${condition})`;

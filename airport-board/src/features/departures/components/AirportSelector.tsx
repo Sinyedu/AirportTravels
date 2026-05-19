@@ -1,4 +1,4 @@
-import { airports } from "../../data/airports";
+import { airports } from "@/entities/airport/airports";
 
 interface AirportSelectorProps {
   selectedCountry: string | null;

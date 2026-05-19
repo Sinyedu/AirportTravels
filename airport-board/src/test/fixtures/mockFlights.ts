@@ -1,5 +1,4 @@
-// app/src/__tests__/mocks/mockFlights.ts
-import { Flight } from "../data/flights";
+import type { Flight } from "@/entities/flight/flights";
 
 export const mockFlights: Flight[] = [
   {

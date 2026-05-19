@@ -1,4 +1,4 @@
-import { Flight } from "../../data/flights";
+import type { Flight } from "@/entities/flight/flights";
 
 interface FlightRowProps {
   flight: Flight;

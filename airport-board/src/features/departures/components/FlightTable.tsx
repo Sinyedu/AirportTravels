@@ -1,4 +1,4 @@
-import { Flight } from "../../data/flights";
+import type { Flight } from "@/entities/flight/flights";
 import FlightRow from "./FlightRow";
 
 interface FlightTableProps {
@@ -14,7 +14,10 @@ export function FlightTable({
   getStatusIcon,
 }: FlightTableProps) {
   return (
-    <table className="w-full border border-yellow-400 text-sm">
+    <table
+      data-testid="flights-table"
+      className="w-full border border-yellow-400 text-sm"
+    >
       <thead>
         <tr className="border-b border-yellow-400 text-left">
           <th className="p-2">Flight</th>

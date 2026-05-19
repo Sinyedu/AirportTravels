@@ -1,10 +1,13 @@
-import { Flight } from "../../data/flights";
+import type {
+  SortField,
+  SortOrder,
+} from "@/features/departures/lib/flightBoard";
 
 interface SortControlsProps {
-  sortField: keyof Flight | "countdown" | null;
-  setSortField: (field: keyof Flight | "countdown" | null) => void;
-  sortOrder: "asc" | "desc";
-  setSortOrder: (order: "asc" | "desc") => void;
+  sortField: SortField | null;
+  setSortField: (field: SortField | null) => void;
+  sortOrder: SortOrder;
+  setSortOrder: (order: SortOrder) => void;
 }
 
 export function SortControls({
@@ -20,7 +23,7 @@ export function SortControls({
         className="ml-2 mr-2"
         value={sortField || ""}
         onChange={(e) =>
-          setSortField(e.target.value as keyof Flight | "countdown")
+          setSortField(e.target.value ? (e.target.value as SortField) : null)
         }
       >
         <option value="">-- None --</option>

@@ -1,4 +1,4 @@
-import { generateFlights } from "@/app/src/data/flights";
+import { generateFlights } from "@/entities/flight/flights";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
