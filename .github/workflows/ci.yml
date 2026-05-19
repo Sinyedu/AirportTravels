@@ -47,8 +47,8 @@ jobs:
     name: Playwright e2e
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.59.1-noble
-
+      image: mcr.microsoft.com/playwright:v1.60.0-noble
+    
     defaults:
       run:
         working-directory: ./airport-board
