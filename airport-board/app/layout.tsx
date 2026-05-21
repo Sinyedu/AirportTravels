@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Where to Fly?",
-  description: "Airport, departure, and destination exploration for travelers.",
+  title: "AirportOps Dashboard",
+  description: "Airport and airline operations monitoring dashboard.",
 };
 
 export default function RootLayout({
