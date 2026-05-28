@@ -1,10 +1,10 @@
-import { DepartureBoard } from "@/features/departures/components/DepartureBoard";
-import { PlatformShell } from "@/shared/ui/PlatformShell";
+import { HeroSection } from "@/components/homepage/HeroSection";
+import { PageShell } from "@/components/layout/PageShell";
 
 export default function Home() {
   return (
-    <PlatformShell>
-      <DepartureBoard />
-    </PlatformShell>
+    <PageShell>
+      <HeroSection />
+    </PageShell>
   );
 }

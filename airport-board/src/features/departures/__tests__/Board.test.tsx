@@ -1,57 +1,35 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import Home from "../../../../app/page";
-import * as flightsData from "@/entities/flight/flights";
-import { mockFlights } from "@/test/fixtures/mockFlights";
 
-describe("Airport Departure Board", () => {
+const push = jest.fn();
+
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push
+  })
+}));
+
+describe("AirportOps homepage", () => {
   beforeEach(() => {
-    // Mock flight generation to always return the same flights + weather
-    jest
-      .spyOn(flightsData, "generateFlights")
-      .mockImplementation((airportCode: string) => ({
-        airport: airportCode,
-        flights: mockFlights,
-        weather: "Clear",
-      }));
-
+    push.mockClear();
     render(<Home />);
   });
 
-  it("renders AirportSelector with country select", () => {
-    const countrySelect = screen.getByLabelText(/Select Country/i);
-    expect(countrySelect).toBeInTheDocument();
-    expect(countrySelect).toHaveDisplayValue("-- Choose --");
+  it("introduces the operations dashboard product", () => {
+    expect(
+      screen.getByRole("heading", {
+        name: /airport operations monitoring for busy airfields/i
+      })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/operational modules/i)).toBeInTheDocument();
   });
 
-  it("renders airport select after selecting country", () => {
-    fireEvent.change(screen.getByLabelText(/Select Country/i), {
-      target: { value: "Denmark" },
+  it("opens a selected airport dashboard", () => {
+    fireEvent.change(screen.getByLabelText(/Select airport/i), {
+      target: { value: "Copenhagen (CPH)" }
     });
+    fireEvent.click(screen.getByRole("button", { name: /open dashboard/i }));
 
-    const airportSelect = screen.getByLabelText(/Select Airport/i);
-    expect(airportSelect).toBeInTheDocument();
-    expect(airportSelect).toHaveDisplayValue("-- Choose --");
-  });
-
-  it("renders Filters after selecting airport", async () => {
-    fireEvent.change(screen.getByLabelText(/Select Country/i), {
-      target: { value: "Denmark" },
-    });
-    fireEvent.change(screen.getByLabelText(/Select Airport/i), {
-      target: { value: "Copenhagen" },
-    });
-
-    // Wait for Filters checkboxes to appear
-    const showDelayedCheckbox = await screen.findByLabelText(/Show Delayed/i);
-    const showBoardingCheckbox = await screen.findByLabelText(
-      /Show Boarding\/Final Call/i,
-    );
-
-    expect(showDelayedCheckbox).toBeInTheDocument();
-    expect(showBoardingCheckbox).toBeInTheDocument();
-
-    // Default checkboxes state
-    expect(showDelayedCheckbox).toBeChecked();
-    expect(showBoardingCheckbox).toBeChecked();
+    expect(push).toHaveBeenCalledWith("/airports/cph");
   });
 });

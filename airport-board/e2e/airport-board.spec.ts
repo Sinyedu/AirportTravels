@@ -1,51 +1,16 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-test.describe("Airport Departure Board", () => {
+test.describe("AirportOps dashboard", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("https://airport-travels.vercel.app/");
+    await page.goto("/");
   });
 
-  test("Filters work correctly", async ({ page }) => {
-    await page.locator("#country-select").selectOption("Denmark");
-    await page.locator("#airport-select").selectOption("Copenhagen");
+  test("opens an airport dashboard from search", async ({ page }) => {
+    await page.getByLabel("Select airport").fill("Copenhagen (CPH)");
+    await page.getByRole("button", { name: "Open dashboard" }).click();
 
-    const showDelayedCheckbox = page.getByLabel("Show Delayed");
-    const showBoardingCheckbox = page.getByLabel("Show Boarding/Final Call");
-
-    await showDelayedCheckbox.uncheck();
-    await showBoardingCheckbox.uncheck();
-
-    const table = page.locator("[data-testid='flights-table']");
-    const rowsAfter = await table.locator("tbody tr").count();
-
-    // Just verify it doesn't crash + still renders
-    expect(rowsAfter).toBeGreaterThanOrEqual(0);
-  });
-
-  test("Sorting works correctly", async ({ page }) => {
-    await page.locator("#country-select").selectOption("Denmark");
-    await page.locator("#airport-select").selectOption("Copenhagen");
-
-    // Target the correct sort dropdown (IMPORTANT)
-    const sortSelect = page.locator("select").nth(2);
-
-    await sortSelect.selectOption("destination");
-
-    const firstAfter = await page
-      .locator("tbody tr:first-child td:nth-child(2)")
-      .innerText();
-
-    // Might not always change due to random data, so softer check:
-    expect(firstAfter).toBeTruthy();
-
-    // Toggle sort order
-    const sortButton = page.getByRole("button", { name: /↑|↓/ });
-    await sortButton.click();
-
-    const firstDesc = await page
-      .locator("tbody tr:first-child td:nth-child(2)")
-      .innerText();
-
-    expect(firstDesc).toBeTruthy();
+    await expect(page).toHaveURL(/\/airports\/cph$/);
+    await expect(page.getByRole("heading", { name: /copenhagen \(cph\)/i })).toBeVisible();
+    await expect(page.getByText("Airport status overview")).toBeVisible();
   });
 });
