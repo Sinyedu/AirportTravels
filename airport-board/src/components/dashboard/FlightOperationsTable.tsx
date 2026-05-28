@@ -51,7 +51,12 @@ export function FlightOperationsTable({ title, flights }: FlightOperationsTableP
           <tbody>
             {flights.slice(0, 8).map((flight) => (
               <tr key={flight.id} className="border-b border-slate-800/80">
-                <td className="px-5 py-3 font-medium text-white">{flight.flight}</td>
+                <td className="px-5 py-3">
+                  <div className="font-medium text-white">{flight.flight}</div>
+                  <div className="mt-1 text-xs text-slate-400">
+                    {flight.airline} / {flight.aircraft}
+                  </div>
+                </td>
                 <td className="px-5 py-3 text-slate-300">{getRoute(flight)}</td>
                 <td className="px-5 py-3 text-slate-300">{flight.time}</td>
                 <td className="px-5 py-3 text-slate-300">{flight.gate}</td>

@@ -60,6 +60,18 @@ function getAverageDelayMinutes(delayedFlights: OperationFlight[]) {
   return Math.round(totalDelay / delayedFlights.length);
 }
 
+function touchesAirport(flight: OperationFlight, airportCode: string) {
+  return flight.originCode === airportCode || flight.destinationCode === airportCode;
+}
+
+function isAirportArrival(flight: OperationFlight, airportCode: string) {
+  return flight.direction === "arrival" && flight.destinationCode === airportCode;
+}
+
+function isAirportDeparture(flight: OperationFlight, airportCode: string) {
+  return flight.direction === "departure" && flight.originCode === airportCode;
+}
+
 export function getAirportOperationsSnapshot(
   airportCode: string
 ): AirportOperationsSnapshot | null {
@@ -70,9 +82,11 @@ export function getAirportOperationsSnapshot(
   }
 
   const flightResponse = generateFlights(airport.code);
-  const flights = toOperationalFlights(flightResponse);
-  const arrivals = flights.filter((flight) => flight.direction === "arrival");
-  const departures = flights.filter((flight) => flight.direction === "departure");
+  const flights = toOperationalFlights(flightResponse).filter((flight) => {
+    return touchesAirport(flight, airport.code);
+  });
+  const arrivals = flights.filter((flight) => isAirportArrival(flight, airport.code));
+  const departures = flights.filter((flight) => isAirportDeparture(flight, airport.code));
   const delayedFlights = flights.filter((flight) => flight.delayMinutes > 0);
   const gates = getGateActivity(airport.code);
 

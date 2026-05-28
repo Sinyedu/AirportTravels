@@ -15,7 +15,12 @@ export default function FlightRow({
 }: FlightRowProps) {
   return (
     <tr className="border-b border-yellow-900 hover:bg-yellow-900/10">
-      <td className="p-2">{flight.flight}</td>
+      <td className="p-2">
+        <div>{flight.flight}</div>
+        <div className="text-xs text-yellow-400/60">
+          {flight.airline} / {flight.aircraft}
+        </div>
+      </td>
       <td className="p-2">{flight.destination}</td>
       <td className="p-2">{flight.time}</td>
       <td className="p-2">{getCountdown(flight.time)}</td>

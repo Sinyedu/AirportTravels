@@ -23,7 +23,9 @@ export function useFlights(airportCode: string | null) {
     }
 
     const updateFlights = () => {
-      const data: FlightResponse = generateFlights(airportCode);
+      const data: FlightResponse = generateFlights(airportCode, {
+        directions: ["departure"],
+      });
       setState({
         airportCode,
         flights: data.flights,
