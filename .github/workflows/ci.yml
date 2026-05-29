@@ -46,6 +46,16 @@ jobs:
       - name: Build application
         run: pnpm run build
 
+      - name: Upload production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: airport-board-next-build
+          path: |
+            airport-board/.next
+            !airport-board/.next/cache
+          include-hidden-files: true
+          retention-days: 1
+
   e2e:
     name: Playwright e2e
     needs: quality
@@ -75,6 +85,12 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Download production build
+        uses: actions/download-artifact@v4
+        with:
+          name: airport-board-next-build
+          path: ./airport-board/.next
 
       - name: Run Playwright tests
         run: pnpm run e2e:ci
