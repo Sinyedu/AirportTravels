@@ -17,10 +17,11 @@ export function SortControls({
   setSortOrder,
 }: SortControlsProps) {
   return (
-    <div>
-      Sort by:
+    <div className="flex flex-wrap items-center gap-2">
+      <label htmlFor="sort-field">Sort by:</label>
       <select
-        className="ml-2 mr-2"
+        id="sort-field"
+        className="bg-black border border-yellow-400 px-2 py-1"
         value={sortField || ""}
         onChange={(e) =>
           setSortField(e.target.value ? (e.target.value as SortField) : null)

@@ -3,7 +3,6 @@ import Link from "next/link";
 const navigationItems = [
   { href: "/", label: "Operations" },
   { href: "/airports", label: "Airports" },
-  { href: "/airspace", label: "Airspace" },
   { href: "/departures", label: "Departures" }
 ];
 

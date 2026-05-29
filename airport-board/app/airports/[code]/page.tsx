@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { AirportStatusCards } from "@/components/dashboard/AirportStatusCards";
 import { FlightOperationsTable } from "@/components/dashboard/FlightOperationsTable";
 import { GateActivityCard } from "@/components/dashboard/GateActivityCard";
-import { LiveAirspacePanel } from "@/components/dashboard/LiveAirspacePanel";
 import { OperationalAlerts } from "@/components/dashboard/OperationalAlerts";
 import { RouteActivityPanel } from "@/components/dashboard/RouteActivityPanel";
 import { WeatherImpactCard } from "@/components/dashboard/WeatherImpactCard";
@@ -59,7 +58,7 @@ export default async function AirportDashboardPage({
               title={dashboardContent.labels.activeFlights}
               flights={snapshot.flights}
             />
-            <div className="grid gap-5 lg:grid-cols-2">
+            <div className="grid gap-5">
               <FlightOperationsTable
                 title={dashboardContent.labels.arrivals}
                 flights={snapshot.arrivals}
@@ -82,8 +81,7 @@ export default async function AirportDashboardPage({
           </div>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-2">
-          <LiveAirspacePanel activeFlights={snapshot.summary.activeFlights} />
+        <div className="grid gap-5">
           <RouteActivityPanel routes={snapshot.routes} />
         </div>
       </section>

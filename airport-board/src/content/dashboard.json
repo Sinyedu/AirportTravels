@@ -8,12 +8,10 @@
     "weatherImpact": "Weather impact",
     "gateActivity": "Gate activity",
     "operationalAlerts": "Operational alerts",
-    "liveAirspace": "Live airspace",
     "routeActivity": "Route activity"
   },
   "descriptions": {
     "dashboard": "Operational control panel for current airport movement, delay, weather, gate, and alert conditions.",
-    "liveAirspace": "OpenSky telemetry integration will populate aircraft positions, altitude, velocity, and callsigns here.",
     "routeActivity": "OpenStreetMap route overlays and live sector activity will appear here once map visualization is connected."
   },
   "table": {

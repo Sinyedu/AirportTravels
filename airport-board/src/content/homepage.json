@@ -9,9 +9,9 @@
   },
   "metrics": [
     {
-      "label": "Telemetry-ready",
-      "value": "OpenSky",
-      "description": "Designed for live aircraft state vectors later."
+      "label": "Operations data",
+      "value": "Local",
+      "description": "Generated flight, gate, delay, and weather scenarios."
     },
     {
       "label": "Map-ready",
@@ -30,6 +30,6 @@
     "Arrivals and departures",
     "Delay and weather impact",
     "Gate and stand activity",
-    "Airspace and route placeholders"
+    "Route activity trends"
   ]
 }

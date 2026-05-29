@@ -14,7 +14,7 @@ export default function FlightFilters({
   setShowBoarding,
 }: FlightFiltersProps) {
   return (
-    <div>
+    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-4">
       <label>
         <input
           type="checkbox"
@@ -23,7 +23,7 @@ export default function FlightFilters({
         />{" "}
         Show Delayed
       </label>
-      <label className="ml-4">
+      <label>
         <input
           type="checkbox"
           checked={showBoarding}

@@ -23,7 +23,7 @@ export function AirportSelector({
         </label>
         <select
           id="country-select"
-          className="bg-black border border-yellow-400 p-2 w-64"
+          className="w-full max-w-sm bg-black border border-yellow-400 p-2"
           value={selectedCountry || ""}
           onChange={(e) => {
             onSelectCountry(e.target.value || null);
@@ -46,7 +46,7 @@ export function AirportSelector({
           </label>
           <select
             id="airport-select"
-            className="bg-black border border-yellow-400 p-2 w-64"
+            className="w-full max-w-sm bg-black border border-yellow-400 p-2"
             value={selectedCity || ""}
             onChange={(e) => {
               const cityName = e.target.value || null;

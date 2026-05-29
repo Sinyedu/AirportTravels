@@ -64,7 +64,7 @@ export function DepartureBoard() {
             getStatusIcon={getStatusIcon}
           />
 
-          <div className="flex justify-between mt-4 w-64">
+          <div className="mt-4 flex w-full max-w-sm items-center justify-between gap-3">
             <button
               className="px-3 py-1 border border-yellow-400 text-yellow-400 disabled:opacity-40"
               disabled={board.page === 0 || board.totalPages <= 1}
@@ -73,7 +73,7 @@ export function DepartureBoard() {
               Previous
             </button>
 
-            <span className="text-yellow-400 text-xs text-center flex justify-center p-5">
+            <span className="text-center text-xs text-yellow-400">
               Page {board.page + 1} of {board.totalPages}
             </span>
 
