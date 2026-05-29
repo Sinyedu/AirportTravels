@@ -82,7 +82,7 @@ export default async function AirportDashboardPage({
         </div>
 
         <div className="grid gap-5">
-          <RouteActivityPanel routes={snapshot.routes} />
+          <RouteActivityPanel airport={snapshot.airport} routes={snapshot.routes} />
         </div>
       </section>
     </PageShell>

@@ -52,6 +52,12 @@ export const airports: AirportCountry[] = [
     ],
   },
   {
+    country: "Netherlands",
+    cities: [
+      { name: "Amsterdam Schiphol", code: "AMS" },
+    ],
+  },
+  {
     country: "Norway",
     cities: [
       { name: "Oslo Gardermoen", code: "OSL" },

@@ -12,7 +12,7 @@
   },
   "descriptions": {
     "dashboard": "Operational control panel for current airport movement, delay, weather, gate, and alert conditions.",
-    "routeActivity": "OpenStreetMap route overlays and live sector activity will appear here once map visualization is connected."
+    "routeActivity": "OpenStreetMap route overlays show the busiest current links from this airport using local operations data."
   },
   "table": {
     "flight": "Flight",
