@@ -3,7 +3,8 @@ import Link from "next/link";
 const navigationItems = [
   { href: "/", label: "Operations" },
   { href: "/airports", label: "Airports" },
-  { href: "/departures", label: "Departures" }
+  { href: "/discover", label: "Discover" },
+  { href: "/departures", label: "Departures" },
 ];
 
 export function Navbar() {
